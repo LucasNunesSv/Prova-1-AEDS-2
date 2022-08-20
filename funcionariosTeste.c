@@ -13,10 +13,10 @@ int main(){
 
     int qtd_Func = 10;
     cria_base_de_dados(arq, qtd_Func);
-    Tfunc *func = busca_binaria(5, arq, qtd_Func);
+    Tfunc *func = busca_sequencial(10, arq, qtd_Func);
 
     if(func == NULL){
-        printf("\n!!! Funcionario não encontrado na base de dados\n");
+        printf("\n!!! Funcionario nao encontrado na base de dados\n");
     }else{
         printf("\n# Funcionario Encontrado!\n\n");
         printf("##### Dados do Funcionario #####\n");
@@ -24,7 +24,7 @@ int main(){
         printf("\n* Nome: %s", func->nome);
         printf("\n* CPF: %s", func->cpf);
         printf("\n* Data de Nascimento: %s", func->data_de_nascimento);
-        printf("\n* Salario: %.2ld", func->salario);
+        printf("\n* Salario: %.2lf", func->salario);
 
     }
 
@@ -94,4 +94,19 @@ Tfunc *busca_binaria(int cod, FILE *arq, int tam_arq){
         }
     }
     return NULL;
+}
+
+// Implementação da busca sequencial conforme foi pedido na prova
+Tfunc *busca_sequencial(int cod, FILE *arq, int tam_arq){
+
+    for(int i=0; i<tam_arq; i++){
+        fseek(arq, i*sizeof(Tfunc), SEEK_SET);
+        Tfunc *func = le(arq);
+        if(func->cod == cod){
+            return func;
+        }
+    }
+
+    return NULL;
+
 }

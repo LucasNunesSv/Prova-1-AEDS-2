@@ -17,6 +17,7 @@ void salva_arq(Tfunc *func, FILE *out);
 Tfunc *le(FILE *in);
 void cria_base_de_dados(FILE *arq, int qtd_func);
 Tfunc *busca_binaria(int cod, FILE *arq, int tam_arq);
+Tfunc *busca_sequencial(int cod, FILE *arq, int tam_arq);
 
 
 #endif
