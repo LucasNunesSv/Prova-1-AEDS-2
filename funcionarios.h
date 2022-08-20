@@ -20,3 +20,4 @@ void salva_no_arq(TFunc *func, FILE *arq);
 TFunc *le(FILE *in);
 void cria_base_de_dados(FILE *arq, int qtdFunc);
 TFunc *busca_binaria(int cod, FILE *arq, int tam);
+TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq);
