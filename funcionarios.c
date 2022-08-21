@@ -6,35 +6,66 @@
 
 int main(){
 
+    // Variáveis
     FILE *arq = fopen("dados.dat", "wb+");
+    clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
+    double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
+    int qtd_de_Func = 1000;
+    int buscar_Func_cod = 1000;
+    int key_array[qtd_de_Func];
+     
     if(arq == NULL){
         printf("\n!!! ERRO AO ABRIR ARQUIVO !!!");
         return 1;
     }
     
-    int nFunc = 100;
-    cria_base_de_dados(arq, nFunc);
-    clock_t start_time, end_time;
-    double temp_exe = 0.0;
-
-    start_time = clock();
-    TFunc *func = busca_sequencial(1, arq, nFunc);
-    end_time = clock();
+    cria_base_de_dados(arq, qtd_de_Func);
     
-    //float temp_exe = (((float)end_time - (float)start_time) / 1000000.0f);
-    temp_exe += (double)(end_time-start_time)/CLOCKS_PER_SEC;
+    start_time_seq = clock();
+    TFunc *func = busca_sequencial(buscar_Func_cod, arq, qtd_de_Func);
+    end_time_seq = clock();
     
-
+    temp_exe_seq += (double)(end_time_seq-start_time_seq)/CLOCKS_PER_SEC;
+    
+    printf("________ ## Teste utilizando a Busca Sequencial ## ________\n\n");
     if(func == NULL){
         printf("Funcionario inexistente na base de dados");
     }else{
-        printf("Funcionario encontrado: Imprimindo...\n");
+        printf("Funcionario encontrado: Imprimindo...");
         toString(func);
     }
 
-    printf("\n\n## No de comparacoes: %i", func->qtd_comparacoes);
-    printf("\n## Tempo gasto na Execucao da busca: %lf s\n\n", temp_exe);
-  
+    printf("\n## No de comparacoes da busca sequencial: %i", func->qtd_comparacoes);
+    printf("\n## Tempo gasto na Execucao da busca sequencial: %lf s\n", temp_exe_seq);
+    printf("____________________________________________________________\n\n");
+
+    key_sorting(arq, &key_array, qtd_de_Func);
+    insertion_sort(&key_array, qtd_de_Func); // Implementação da função de ordenação InsertioSort, embora o vetor ja esteja ordenado
+
+    start_time_bin = clock();
+    int cod = buscaBinaria(buscar_Func_cod, qtd_de_Func, &key_array);
+    end_time_bin = clock();
+    printf("\n## Tempo gasto na Execucao da busca Binaria: %lf s\n", temp_exe_bin);
+
+    temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
+
+    printf("\n\n________ ## Teste utilizando a Busca Binaria ## ________\n\n");
+    int verification = 0;
+    for(int i=0; i<qtd_de_Func; i++){
+        if(key_array[i] == cod){
+            verification ++;
+        }
+    }
+    if(verification == 0){
+        printf("Funcionario inexistente na base de dados");
+    }else{
+        printf("Funcionario encontrado: Imprimindo...");
+        fseek(arq, cod*sizeof(TFunc), SEEK_SET);
+        func = le(arq);
+        toString(func);
+    }
+    printf("____________________________________________________________\n\n");
+
     free(func);
     fclose(arq);
 
@@ -93,24 +124,30 @@ void cria_base_de_dados(FILE *arq, int nFunc){
     }
 }
 
-TFunc *busca_binaria(int cod, FILE *arq, int tam){
-    int left = 0, right = tam-1, qtd_comp = 0;
-    while(left <= right){
-        qtd_comp++;
-        int middle = (left + right)/2;
-        fseek(arq, middle*sizeof(TFunc), SEEK_SET);
-        TFunc *func = le(arq);
+int buscaBinaria (int cod, int qtd_func, int *array) { 
 
-        if(cod == func->cod){
-            func->qtd_comparacoes = qtd_comp;
-            return func;
-        }else if(func->cod < cod){
-            left = middle+1;
-        }else{
-            right = middle-1;
+   int e = -1, d = qtd_func; 
+   int qtd_comp = 0;
+
+   if(cod > qtd_func){
+    return NULL;
+   }
+
+    while (e < d-1) {    
+        int m = (e + d)/2;
+        if (array[m] < cod){
+            e = m; qtd_comp++; 
+        }
+        else {
+            d = m; qtd_comp++;
         }
     }
-    return NULL;
+if(qtd_comp>qtd_func)
+printf("O codigo não esta contido no array");
+else
+printf("\n## No de comparacoes da busca Binaria: %i", qtd_comp);
+  
+   return d;
 }
 
 TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq){
@@ -131,93 +168,53 @@ TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq){
 
 }
 
-/*
-KEYSORTING 
-Método:
-• 1. Leia o arquivo e coloque num vetor de tags a chave e a RRN de 
-cada registro.
-• 2. Ordene o vetor em memória (“Internal Sorting”)
-• 3. Reescrever os arquivo segundo a ordem dada pelo vetor ordenado
-*/
+void key_sorting(FILE *arq, int *key_array, int qtd_func){
 
-/* ____ CHATZIN ____
+    for(int i=0; i<qtd_func; i++){
+        fseek(arq, i*sizeof(TFunc), SEEK_SET);
+        TFunc *func = le(arq);
+        key_array[i] = func->cod;
+    }
 
-Deu certo KADSASDASDK
-xove qq ce arrumou 
-no stack overflow ? isso sdsdslkdks
-KKKKKKKKKKK, fazzer o insertsort? vou tentar fazer e deixar de comentario no codigo, vai que farmo ponto ne KKK
-KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK pqpm KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
-EUY 
-to tentando entender, isso ai é o timer ?
- SKDKSKSSDK
- tem no stack
+}
 
- VEYY 
- nao tem a prova
- ela pediu busca SEQUENCIAL AAAAA
- E A GNT QUEBRANDO A CABEÇA
- COM BINARIA TMNC
- 
- 
+void insertion_sort(int *array, int qtd_func){
+
+    int i, j, tmp;
+  
+    for(i = 1; i < qtd_func; i++){
+    tmp = array[i];
+    for(j = i-1; j >= 0 && tmp < array[j]; j--){
+        array[j+1] = array[j];
+    }
+    array[j+1] = tmp;
+    }
+
+}
 
 
+/* _____ ## Anotações ## ______
 
- CHEGOU UMA GALERA AQUI, JA VOLTO.; 
- blz KASKASKDAS
+# 1ª tentativa da função de busca binaria
 
- VOLTEI 
- 
+int busca_binaria(int *array, int qtd_func, int cod){
+    
+    int begin = 0;
+    int end = qtd_func - 1;
+    
 
-esse clock é da time.h ?
-doidera
-xove se entendi, busca sequencial pra indicar quantas comparações foram feitas né, então é literal usar o I de busca, ou tu ja fez isso ?]
+    while (begin <= end) {  // Condição de parada 
+        int i = (begin + end) / 2;  // Calcula o meio do sub-vetor 
+        if (array[i] == cod) {  // Item encontrado 
+            return i;
+        }
+        if (array[i] < cod) {  // Item está no sub-vetor à direita 
+            begin = i + 1;
+        } else {  // vector[i] > item. Item está no sub-vetor à esquerda 
+            end = i;
+        }
+    }
+    return -1;
+}
 
-b) (5 pontos) Realize uma busca sequencial por um funcionário específico. Considerar como
-chave de busca o código do funcionário. Informe o total de comparações feitas até encontrar o
-funcionário em questão, bem como o tempo gasto na busca.
-então se começa do 0 e vai até o 12, teve 13 comparações
-creio q sim KDKS ta errado?
-na vdd
-ele começa do 1 msm
-se ja faz ta ok entãom sa
-ce transformou em tad o projeto, pqp KKKK,
-queeee
-como assim?
-uai mano, sabe o que é tad ?
-é o .h ali, antes n tava estruturado dessa forma
-zeca tatu
-
-vdd DSKDKSD mas eh do video q ela postou
-to seguindo so
-essa .h eh so pra separar os escopos e o TAD ksdkd dava pra fazer tudo no main
-mas assim fica mais separado
-assim fica chatom n gosto, mas fé
-ODEIO TADm funciona totalemnte diferente de classificação em outras linguagens, c tem esses frufrus esquisitos
-KKKKKKKKKKKKKKKKK
-scr
-
-uma coisa q nao consegui fazer 
-foi criar o main em outro arquivo
-tipo queria criar um main.c q teria so a parte executavel, sem as funções
-mas deu nao
-
-so funciona se  tiver dentro da funcionarios.c
-ai vc ta querendo frufruzar mais tbm né, é so fazer o que programa pede po KKKKKKKK ta maluco
-
-KDASDKASASDKSD eu sou uma flor, por isso
-queria procurar uma função pronta pra achar de base, mas to procurando e n ta vindo KKK
-KSDKF triste
-o slide dela n tem codigo, eh so abstração
-eu n faço ideia de como faz a letra C
- 
- reclamaram muito dela na ultimo periodo inclusive pr conta disso, so usa pseudolinguagem, n usava linguagem alegit, ai ninguem sabia implementar KKKK
-
-Ah pronto, tava bom demais
-
-legit , nesse link aqui tem https://stackoverflow.com/questions/18820288/sorting-based-on-key-from-a-file
-
-KRL BROTHER N ACHO NADA DE KEYSORTING, so tem literal essa merda ai, desgraça de c
-KKSDKDFKD eu ja nem sei mais oq fazer
-tbm n, vou ter que dar uma saida, mais tarde volto
-blzz
 */
