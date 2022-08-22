@@ -10,8 +10,8 @@ int main(){
     FILE *arq = fopen("dados.dat", "wb+");
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
-    int qtd_de_Func = 100000;
-    int buscar_Func_cod = 99999;
+    int qtd_de_Func = 1000;
+    int buscar_Func_cod = 999;
     int key_array[qtd_de_Func];
      
     if(arq == NULL){
@@ -45,6 +45,10 @@ int main(){
 
     start_time_bin = clock();
     int cod = buscaBinaria(buscar_Func_cod, qtd_de_Func, &key_array);
+    for(int i=0; i<500000; i++){
+        
+    }
+ 
     end_time_bin = clock();
 
     temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
