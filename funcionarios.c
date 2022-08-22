@@ -10,8 +10,8 @@ int main(){
     FILE *arq = fopen("dados.dat", "wb+");
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
-    int qtd_de_Func = 1000;
-    int buscar_Func_cod = 1000;
+    int qtd_de_Func = 100000;
+    int buscar_Func_cod = 99999;
     int key_array[qtd_de_Func];
      
     if(arq == NULL){
@@ -30,6 +30,7 @@ int main(){
     printf("________ ## Teste utilizando a Busca Sequencial ## ________\n\n");
     if(func == NULL){
         printf("Funcionario inexistente na base de dados");
+        return 1;
     }else{
         printf("Funcionario encontrado: Imprimindo...");
         toString(func);
@@ -45,9 +46,11 @@ int main(){
     start_time_bin = clock();
     int cod = buscaBinaria(buscar_Func_cod, qtd_de_Func, &key_array);
     end_time_bin = clock();
-    printf("\n## Tempo gasto na Execucao da busca Binaria: %lf s\n", temp_exe_bin);
 
     temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
+    
+    printf("\n## Tempo gasto na Execucao da busca Binaria: %lf s\n", temp_exe_bin);
+
 
     printf("\n\n________ ## Teste utilizando a Busca Binaria ## ________\n\n");
     int verification = 0;
@@ -142,10 +145,10 @@ int buscaBinaria (int cod, int qtd_func, int *array) {
             d = m; qtd_comp++;
         }
     }
-if(qtd_comp>qtd_func)
-printf("O codigo não esta contido no array");
-else
-printf("\n## No de comparacoes da busca Binaria: %i", qtd_comp);
+    if(qtd_comp>qtd_func)
+    printf("O codigo não esta contido no array");
+    else
+    printf("\n## No de comparacoes da busca Binaria: %i", qtd_comp);
   
    return d;
 }

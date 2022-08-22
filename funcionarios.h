@@ -18,10 +18,8 @@ void toString(TFunc *func);
 void salva_no_arq(TFunc *func, FILE *arq);
 TFunc *le(FILE *in);
 void cria_base_de_dados(FILE *arq, int qtdFunc);
-int busca_binaria(int *array, int qtd_func, int cod);
 TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq);
 void key_sorting(FILE *arq, int *key_array, int qtd_func);
 void insertion_sort(int *array, int qtd_func);
 int buscaBinaria (int cod, int qtd_func, int *array);
-
-//fru fru KKKKKKKKKKKKKKKK
+//int busca_binaria(int *array, int qtd_func, int cod);
