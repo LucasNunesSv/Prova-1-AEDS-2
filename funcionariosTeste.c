@@ -13,7 +13,7 @@ int main(){
 
     int qtd_Func = 10;
     cria_base_de_dados(arq, qtd_Func);
-    Tfunc *func = busca_sequencial(10, arq, qtd_Func);
+    Tfunc *func = busca_sequencial(5, arq, qtd_Func);
 
     if(func == NULL){
         printf("\n!!! Funcionario nao encontrado na base de dados\n");
@@ -64,11 +64,13 @@ Tfunc *le(FILE *in){
 
 void cria_base_de_dados(FILE *arq, int qtd_func){
 
-    for(int i = 1; i <= qtd_func; i++){
+    srand(time(NULL));
 
+    for(int i = 1; i <= qtd_func; i++){
+        int num = rand()%10;
         Tfunc func;
-        func.cod = i;
-        sprintf(func.nome, "Funcionario %i", i);
+        func.cod = num;
+        sprintf(func.nome, "Funcionario %i", num);
         sprintf(func.cpf, "000.000.000-00");
         sprintf(func.data_de_nascimento, "00/00/0000");
         func.salario = 1000+i;

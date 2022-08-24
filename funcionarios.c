@@ -4,14 +4,17 @@
 #include <time.h>
 #include "funcionarios.h"
 
+// Lucas Nunes Silveira - 20.2.8040
+// Matheus Lopes Moreira - 20.2.8002
+
 int main(){
 
     // Variáveis
     FILE *arq = fopen("dados.dat", "wb+");
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
-    int qtd_de_Func = 1000;
-    int buscar_Func_cod = 999;
+    int qtd_de_Func = 100;
+    int buscar_Func_cod = 78;
     int key_array[qtd_de_Func];
      
     if(arq == NULL){
@@ -37,23 +40,32 @@ int main(){
     }
 
     printf("\n## No de comparacoes da busca sequencial: %i", func->qtd_comparacoes);
-    printf("\n## Tempo gasto na Execucao da busca sequencial: %lf s\n", temp_exe_seq);
+    printf("\n## Tempo gasto na Execucao da busca sequencial: %.6f s\n", temp_exe_seq);
     printf("____________________________________________________________\n\n");
 
     key_sorting(arq, &key_array, qtd_de_Func);
-    insertion_sort(&key_array, qtd_de_Func); // Implementação da função de ordenação InsertioSort, embora o vetor ja esteja ordenado
+
+    for(int i=0; i<qtd_de_Func; i++){
+        printf("%i ", key_array[i]);
+    }
+    printf("\n\n");
+
+    insertion_sort_disco(arq, qtd_de_Func);
+    key_sorting(arq, &key_array, qtd_de_Func);
+    //insertion_sort(&key_array, qtd_de_Func);
+
+    for(int i=0; i<qtd_de_Func; i++){
+        printf("%i ", key_array[i]);
+    }
+    
 
     start_time_bin = clock();
     int cod = buscaBinaria(buscar_Func_cod, qtd_de_Func, &key_array);
-    for(int i=0; i<500000; i++){
-        
-    }
- 
     end_time_bin = clock();
 
     temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
     
-    printf("\n## Tempo gasto na Execucao da busca Binaria: %lf s\n", temp_exe_bin);
+    printf("\n## Tempo gasto na Execucao da busca Binaria: %.6f s\n", temp_exe_bin);
 
 
     printf("\n\n________ ## Teste utilizando a Busca Binaria ## ________\n\n");
@@ -90,7 +102,7 @@ void toString(TFunc *func){
 
 }
 
-void salva_no_arq(TFunc *func, FILE *arq){
+void salva_arq(TFunc *func, FILE *arq){
     
     fwrite(&func->cod, sizeof(int), 1, arq);
     fwrite(func->nome, sizeof(char), sizeof(func->nome), arq);
@@ -118,15 +130,18 @@ TFunc *le(FILE *in){
 
 void cria_base_de_dados(FILE *arq, int nFunc){
 
+    srand(time(NULL));
+
     for(int i=1; i<= nFunc; i++){
+        int rand_num = rand()%nFunc;
         TFunc func;
-        func.cod = i;
-        sprintf(func.nome, "Funcionario %i", i);
+        func.cod = rand_num;
+        sprintf(func.nome, "Funcionario %i", rand_num);
         sprintf(func.cpf, "000.000.000-00");
         sprintf(func.data_nascimento, "01/01/2000");
         func.salario = 1000 + i;
         fseek(arq, (i-1)*sizeof(TFunc), SEEK_SET);
-        salva_no_arq(&func, arq);
+        salva_arq(&func, arq);
        
     }
 }
@@ -197,6 +212,29 @@ void insertion_sort(int *array, int qtd_func){
     array[j+1] = tmp;
     }
 
+}
+
+
+void insertion_sort_disco(FILE *arq, int qtd_func){
+    rewind(arq); //posiciona cursor no inicio do arquivo
+    int i;
+    for (int j = 2; j <= qtd_func; j++) {
+        fseek(arq, (j-1) * sizeof(TFunc), SEEK_SET);
+        TFunc *func_j = le(arq);
+        i = j - 1;
+        fseek(arq, (i-1) * sizeof(TFunc), SEEK_SET);
+        TFunc *func_i = le(arq);
+        while ((i > 0) && (func_i->cod > func_j->cod)) {
+            fseek(arq, i * sizeof(TFunc), SEEK_SET);
+            salva_arq(func_i, arq);
+            i = i - 1;
+            fseek(arq, (i-1) * sizeof(TFunc), SEEK_SET);
+            func_i = le(arq);
+         }
+        fseek(arq, (i) * sizeof(TFunc), SEEK_SET);
+        salva_arq(func_j, arq);
+    }
+    fflush(arq);
 }
 
 
