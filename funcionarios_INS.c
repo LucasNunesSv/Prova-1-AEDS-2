@@ -11,8 +11,7 @@ int main(){
 
     // Variáveis
 
-    FILE *arq = fopen("dados.dat", "wb+");
-    FILE *arq_ordenado = fopen("dados_ordenado.dat", "wb+");
+    FILE *arq = fopen("dados_INS.dat", "wb+");
 
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
 
@@ -23,11 +22,6 @@ int main(){
     int tot_comp_seq = 0, tot_comp_bin = 0;
      
     if(arq == NULL){
-        printf("\n!!! ERRO AO ABRIR ARQUIVO !!!");
-        return 1;
-    }
-
-    if(arq_ordenado == NULL){
         printf("\n!!! ERRO AO ABRIR ARQUIVO !!!");
         return 1;
     }
@@ -54,11 +48,11 @@ int main(){
     printf("\n## Tempo gasto na Execucao da busca sequencial: %.6f s\n", temp_exe_seq);
     printf("____________________________________________________________\n\n");
 
-    //insertion_sort_disco(arq, qtd_de_Func);
-    Key_sorting_file(arq, arq_ordenado, qtd_de_Func);
+    insertion_sort_disco(arq, qtd_de_Func);
+    //Key_sorting_file(arq, arq_ordenado, qtd_de_Func);
 
     start_time_bin = clock();
-    func = buscaBinaria(find_func, qtd_de_Func, arq_ordenado, &tot_comp_bin);
+    func = buscaBinaria(find_func, qtd_de_Func, arq, &tot_comp_bin);
     end_time_bin = clock();
 
     temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
@@ -78,7 +72,6 @@ int main(){
 
     free(func);
     fclose(arq);
-    fclose(arq_ordenado);
 
     return 0;
 }
@@ -183,6 +176,7 @@ void key_sorting(FILE *arq, int *key_array, int qtd_func){
 }
 
 void insertion_sort_disco(FILE *arq, int qtd_func){
+    printf("\nRealizando Insertion sort ... \n");
     rewind(arq); 
     int i;
     for (int j = 2; j <= qtd_func; j++) {
@@ -204,55 +198,55 @@ void insertion_sort_disco(FILE *arq, int qtd_func){
     fflush(arq);
 }
 
-void ordena_array(Key_sorting *array, int qtd_func){
+// void ordena_array(Key_sorting *array, int qtd_func){
 
-    for (int i=0; i< qtd_func; i++) {
-        for (int j=i+1; j< qtd_func; j++) {
-            if (array[i].cod > array[j].cod) {
-                Key_sorting aux = array[i];
-                array[i] = array[j];
-                array[j] = aux;
-            }
-        }
-    }
-}
+//     for (int i=0; i< qtd_func; i++) {
+//         for (int j=i+1; j< qtd_func; j++) {
+//             if (array[i].cod > array[j].cod) {
+//                 Key_sorting aux = array[i];
+//                 array[i] = array[j];
+//                 array[j] = aux;
+//             }
+//         }
+//     }
+// }
 
-void Key_sorting_file(FILE *arq, FILE *arq_ordenado, int qtd_func){
+// void Key_sorting_file(FILE *arq, FILE *arq_ordenado, int qtd_func){
 
-    clock_t start_time, end_time;
-    double temp_exe = 0.0;
+//     clock_t start_time, end_time;
+//     double temp_exe = 0.0;
 
-    start_time = clock();
+//     start_time = clock();
 
-    Key_sorting tag_array[qtd_func];
+//     Key_sorting tag_array[qtd_func];
 
-    rewind(arq);
+//     rewind(arq);
 
-    for(int i=0; i<qtd_func; i++){
-        fseek(arq, i*sizeof(TFunc), SEEK_SET);
-        tag_array[i].RRN = ftell(arq);
-        TFunc *func = le(arq); 
-        tag_array[i].cod = func->cod;
-    }
+//     for(int i=0; i<qtd_func; i++){
+//         fseek(arq, i*sizeof(TFunc), SEEK_SET);
+//         tag_array[i].RRN = ftell(arq);
+//         TFunc *func = le(arq); 
+//         tag_array[i].cod = func->cod;
+//     }
 
-    ordena_array(&tag_array, qtd_func);
+//     ordena_array(&tag_array, qtd_func);
 
-    rewind(arq);
+//     rewind(arq);
 
-    for(int i=0; i<qtd_func; i++){
+//     for(int i=0; i<qtd_func; i++){
 
-        fseek(arq,tag_array[i].RRN, SEEK_SET);
-        TFunc *func = le(arq);
+//         fseek(arq,tag_array[i].RRN, SEEK_SET);
+//         TFunc *func = le(arq);
 
-        fseek(arq_ordenado, i*sizeof(TFunc), SEEK_SET);
-        salva_arq(func, arq_ordenado);
-    }
+//         fseek(arq_ordenado, i*sizeof(TFunc), SEEK_SET);
+//         salva_arq(func, arq_ordenado);
+//     }
 
-    end_time = clock();
-    temp_exe += (double)(end_time-start_time)/CLOCKS_PER_SEC;
-    printf("\n## Tempo gasto na Execucao do Key Sorting: %.8f s\n", temp_exe);
+//     end_time = clock();
+//     temp_exe += (double)(end_time-start_time)/CLOCKS_PER_SEC;
+//     printf("\n## Tempo gasto na Execucao do Key Sorting: %.8f s\n", temp_exe);
 
-}
+// }
 
 
 /* _____ ## Anotações ## ______
