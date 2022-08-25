@@ -18,11 +18,16 @@ int main(){
 
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
     int qtd_de_Func = 100;
-    int find_func = 50;
+    int find_func = 60;
     int key_array[qtd_de_Func];
     int tot_comp_seq = 0, tot_comp_bin = 0;
      
     if(arq == NULL){
+        printf("\n!!! ERRO AO ABRIR ARQUIVO !!!");
+        return 1;
+    }
+
+    if(arq_ordenado == NULL){
         printf("\n!!! ERRO AO ABRIR ARQUIVO !!!");
         return 1;
     }
