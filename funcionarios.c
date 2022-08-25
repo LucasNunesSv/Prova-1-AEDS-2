@@ -14,7 +14,7 @@ int main(){
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
     int qtd_de_Func = 100;
-    int buscar_Func_cod = 78;
+    int buscar_Func_cod = 50;
     int key_array[qtd_de_Func];
      
     if(arq == NULL){
@@ -130,13 +130,13 @@ TFunc *le(FILE *in){
 
 void cria_base_de_dados(FILE *arq, int nFunc){
 
-    srand(time(NULL));
+    int array[] = {24,40,17,38,31,10,20,36,42,49,50,92,72,9,85,94,45,88,86,58,18,71,22,25,1,62,83,79,39,54,87,7,95,98,2,14,67,33, 82,90,81,8,28,16,84,91,97,59,	48,99,21,73,4,27,41,78,29,44,43,93,13,3,6,56,89,65,61,96,77,70,76,75,32,34,	100,35,11,64,47,46,37,5,23,74,69,68,19,66,12,80,51,60,52,55,26,63,30,57,53};
 
     for(int i=1; i<= nFunc; i++){
-        int rand_num = rand()%nFunc;
+        int rand_num = array[i];
         TFunc func;
         func.cod = rand_num;
-        sprintf(func.nome, "Funcionario %i", rand_num);
+        sprintf(func.nome, "Funcionario %i", array[i]);
         sprintf(func.cpf, "000.000.000-00");
         sprintf(func.data_nascimento, "01/01/2000");
         func.salario = 1000 + i;
@@ -151,9 +151,9 @@ int buscaBinaria (int cod, int qtd_func, int *array) {
    int e = -1, d = qtd_func; 
    int qtd_comp = 0;
 
-   if(cod > qtd_func){
-    return NULL;
-   }
+//    if(cod > qtd_func){
+//     return NULL;
+//    }
 
     while (e < d-1) {    
         int m = (e + d)/2;
@@ -216,7 +216,7 @@ void insertion_sort(int *array, int qtd_func){
 
 
 void insertion_sort_disco(FILE *arq, int qtd_func){
-    rewind(arq); //posiciona cursor no inicio do arquivo
+    rewind(arq); 
     int i;
     for (int j = 2; j <= qtd_func; j++) {
         fseek(arq, (j-1) * sizeof(TFunc), SEEK_SET);
