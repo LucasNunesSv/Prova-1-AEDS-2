@@ -12,12 +12,13 @@ int main(){
     // Variáveis
 
     FILE *arq = fopen("dados.dat", "wb+");
+    FILE *arq_ordenado = fopen("dados_ordenado.dat", "wb+");
 
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
 
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
     int qtd_de_Func = 100;
-    int buscar_Func_cod = 98;
+    int find_func = 50;
     int key_array[qtd_de_Func];
     int tot_comp_seq = 0, tot_comp_bin = 0;
      
@@ -29,7 +30,7 @@ int main(){
     cria_base_de_dados(arq, qtd_de_Func);
     
     start_time_seq = clock();
-    TFunc *func = busca_sequencial(buscar_Func_cod, arq, qtd_de_Func, &tot_comp_seq);
+    TFunc *func = busca_sequencial(find_func, arq, qtd_de_Func, &tot_comp_seq);
     end_time_seq = clock();
     
     temp_exe_seq += (double)(end_time_seq-start_time_seq)/CLOCKS_PER_SEC;
@@ -45,39 +46,34 @@ int main(){
     }
 
     printf("\n## No de comparacoes da busca sequencial: %i",tot_comp_seq);
-    printf("\n## Tempo gasto na Execucao da busca sequencial: %.8f s\n", temp_exe_seq);
+    printf("\n## Tempo gasto na Execucao da busca sequencial: %.6f s\n", temp_exe_seq);
     printf("____________________________________________________________\n\n");
 
-    insertion_sort_disco(arq, qtd_de_Func);
-    key_sorting(arq, &key_array, qtd_de_Func);
+    //insertion_sort_disco(arq, qtd_de_Func);
+    Key_sorting_file(arq, arq_ordenado, qtd_de_Func);
 
     start_time_bin = clock();
-    int cod = iterative_binary_search(&key_array, buscar_Func_cod, qtd_de_Func, &tot_comp_bin);
+    func = buscaBinaria(find_func, qtd_de_Func, arq_ordenado, &tot_comp_bin);
     end_time_bin = clock();
 
     temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
     
     printf("\n\n________ ## Teste utilizando a Busca Binaria ## ________\n\n");
-    int verification = 0;
-    for(int i=0; i<qtd_de_Func; i++){
-        if(key_array[i] == cod){
-            verification ++;
-        }
-    }
-    if(verification == 0){
-        printf("Funcionario inexistente na base de dados");
+    if(func == NULL){
+        printf("Funcionario inexistente na base de dados\n");
+        printf("____________________________________________________________\n\n");
+        return 1;
     }else{
         printf("Funcionario encontrado: Imprimindo...");
-        fseek(arq, cod*sizeof(TFunc), SEEK_SET);
-        func = le(arq);
         toString(func);
     }
     printf("\n## No de comparacoes da busca Binaria: %i", tot_comp_bin);
-    printf("\n## Tempo gasto na Execucao da busca Binaria: %.8f s\n", temp_exe_bin);
+    printf("\n## Tempo gasto na Execucao da busca Binaria: %.6f s\n", temp_exe_bin);
     printf("____________________________________________________________\n\n");
 
     free(func);
     fclose(arq);
+    fclose(arq_ordenado);
 
     return 0;
 }
@@ -130,11 +126,9 @@ void cria_base_de_dados(FILE *arq, int nFunc){
         sprintf(func.nome, "Funcionario %i", rand_num);
         sprintf(func.cpf, "000.000.000-00");
         sprintf(func.data_nascimento, "01/01/2000");
-        func.salario = 1000 + i;
+        func.salario = 1000 + rand_num;
         fseek(arq, (i-1)*sizeof(TFunc), SEEK_SET);
         salva_arq(&func, arq);
-        printf("%i - ",rand_num);
-       
     }
 }
 
@@ -151,6 +145,26 @@ TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq, int *comp){
 
     return NULL;
 
+}
+
+TFunc *buscaBinaria (int cod, int qtd_func, FILE *arq, int *comp){
+
+    int l = 0, r = qtd_func-1;
+
+    while(l <= r){
+        *comp +=1;
+        int meio = (l+r)/2;
+        fseek(arq, meio*sizeof(TFunc), SEEK_SET);
+        TFunc *func = le(arq);
+        if(cod == func->cod){
+            return func;
+        }else if(func->cod < cod){
+            l = meio+1;
+        }else{
+            r = meio-1;
+        }
+    }
+    return NULL;
 }
 
 void key_sorting(FILE *arq, int *key_array, int qtd_func){
@@ -185,44 +199,53 @@ void insertion_sort_disco(FILE *arq, int qtd_func){
     fflush(arq);
 }
 
-iterative_binary_search(int *array, int item, int array_length, int *comp)
-{
-    int begin = 0;
-    int end = array_length - 1;
+void ordena_array(Key_sorting *array, int qtd_func){
 
-    while (begin <= end) {  /* Condição de parada */
-
-        int i = (begin + end) / 2;  /* Calcula o meio do sub-vetor */
-
-        if (array[i] == item) {  /* Item encontrado */
-            *comp +=1;
-            return i;
-        }
-
-        if (array[i] < item) {  /* Item está no sub-vetor à direita */
-            *comp +=1;
-            begin = i + 1;
-        } else {  /* vector[i] > item. Item está no sub-vetor à esquerda */
-            end = i;
+    for (int i=0; i< qtd_func; i++) {
+        for (int j=i+1; j< qtd_func; j++) {
+            if (array[i].cod > array[j].cod) {
+                Key_sorting aux = array[i];
+                array[i] = array[j];
+                array[j] = aux;
+            }
         }
     }
-
-    return -1;
 }
 
 void Key_sorting_file(FILE *arq, FILE *arq_ordenado, int qtd_func){
 
+    clock_t start_time, end_time;
+    double temp_exe = 0.0;
+
+    start_time = clock();
+
     Key_sorting tag_array[qtd_func];
+
+    rewind(arq);
 
     for(int i=0; i<qtd_func; i++){
         fseek(arq, i*sizeof(TFunc), SEEK_SET);
+        tag_array[i].RRN = ftell(arq);
         TFunc *func = le(arq); 
         tag_array[i].cod = func->cod;
-        tag_array[i].RRN = i*sizeof(TFunc);
     }
 
-    
+    ordena_array(&tag_array, qtd_func);
 
+    rewind(arq);
+
+    for(int i=0; i<qtd_func; i++){
+
+        fseek(arq,tag_array[i].RRN, SEEK_SET);
+        TFunc *func = le(arq);
+
+        fseek(arq_ordenado, i*sizeof(TFunc), SEEK_SET);
+        salva_arq(func, arq_ordenado);
+    }
+
+    end_time = clock();
+    temp_exe += (double)(end_time-start_time)/CLOCKS_PER_SEC;
+    printf("\n## Tempo gasto na Execucao do Key Sorting: %.8f s\n", temp_exe);
 
 }
 
@@ -277,20 +300,32 @@ int buscaBinaria (int cod, int qtd_func, int *array) {
    return d;
 }
 
+iterative_binary_search(int *array, int item, int array_length, int *comp)
+{
+    int begin = 0;
+    int end = array_length - 1;
 
-void insertion_sort(int *array, int qtd_func){
+    while (begin <= end) {  Condição de parada 
 
-    int i, j, tmp;
-  
-    for(i = 1; i < qtd_func; i++){
-    tmp = array[i];
-    for(j = i-1; j >= 0 && tmp < array[j]; j--){
-        array[j+1] = array[j];
+        int i = (begin + end) / 2;   Calcula o meio do sub-vetor 
+
+        if (array[i] == item) {   Item encontrado
+            *comp +=1;
+            return i;
+        }
+
+        if (array[i] < item) {   Item está no sub-vetor à direita 
+            *comp +=1;
+            begin = i + 1;
+        } else {  /* vector[i] > item. Item está no sub-vetor à esquerda 
+            end = i;
+        }
     }
-    array[j+1] = tmp;
-    }
 
+    return -1;
 }
+
+
 
 
     //int array[] = {24,40,17,38,31,10,20,36,42,49,50,92,72,9,85,94,45,88,86,58,18,71,22,25,1,62,83,79,39,54,87,7,95,98,2,14,67,33, 82,90,81,8,28,16,84,91,97,59,	48,99,21,73,4,27,41,78,29,44,43,93,13,3,6,56,89,65,61,96,77,70,76,75,32,34,	100,35,11,64,47,46,37,5,23,74,69,68,19,66,12,80,51,60,52,55,26,63,30,57,53};
