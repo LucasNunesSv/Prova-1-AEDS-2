@@ -14,12 +14,18 @@
      int qtd_comparacoes;
  }TFunc;
 
+ typedef struct key_sorting{
+    int cod;
+    long RRN;
+ }Key_sorting;
+
 void toString(TFunc *func);
 void salva_arq(TFunc *func, FILE *arq);
 TFunc *le(FILE *in);
 void cria_base_de_dados(FILE *arq, int qtdFunc);
-TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq);
-int buscaBinaria (int cod, int qtd_func, int *array);
+TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq, int *comp);
+//int buscaBinaria (int cod, int qtd_func, int *array);
 void key_sorting(FILE *arq, int *key_array, int qtd_func);
-void insertion_sort(int *array, int qtd_func);
 void insertion_sort_disco(FILE *arq, int qtd_func);
+int iterative_binary_search(int *array, int item, int array_length, int *comp);
+void Key_sorting_file(FILE *arq, FILE *arq_ordenado, int qtd_func);

@@ -10,12 +10,16 @@
 int main(){
 
     // Variáveis
+
     FILE *arq = fopen("dados.dat", "wb+");
+
     clock_t start_time_seq, end_time_seq, start_time_bin, end_time_bin;
+
     double temp_exe_seq = 0.0, temp_exe_bin = 0.0;
     int qtd_de_Func = 100;
-    int buscar_Func_cod = 50;
+    int buscar_Func_cod = 98;
     int key_array[qtd_de_Func];
+    int tot_comp_seq = 0, tot_comp_bin = 0;
      
     if(arq == NULL){
         printf("\n!!! ERRO AO ABRIR ARQUIVO !!!");
@@ -25,49 +29,34 @@ int main(){
     cria_base_de_dados(arq, qtd_de_Func);
     
     start_time_seq = clock();
-    TFunc *func = busca_sequencial(buscar_Func_cod, arq, qtd_de_Func);
+    TFunc *func = busca_sequencial(buscar_Func_cod, arq, qtd_de_Func, &tot_comp_seq);
     end_time_seq = clock();
     
     temp_exe_seq += (double)(end_time_seq-start_time_seq)/CLOCKS_PER_SEC;
     
     printf("________ ## Teste utilizando a Busca Sequencial ## ________\n\n");
     if(func == NULL){
-        printf("Funcionario inexistente na base de dados");
+        printf("Funcionario inexistente na base de dados\n");
+        printf("____________________________________________________________\n\n");
         return 1;
     }else{
         printf("Funcionario encontrado: Imprimindo...");
         toString(func);
     }
 
-    printf("\n## No de comparacoes da busca sequencial: %i", func->qtd_comparacoes);
-    printf("\n## Tempo gasto na Execucao da busca sequencial: %.6f s\n", temp_exe_seq);
+    printf("\n## No de comparacoes da busca sequencial: %i",tot_comp_seq);
+    printf("\n## Tempo gasto na Execucao da busca sequencial: %.8f s\n", temp_exe_seq);
     printf("____________________________________________________________\n\n");
-
-    key_sorting(arq, &key_array, qtd_de_Func);
-
-    for(int i=0; i<qtd_de_Func; i++){
-        printf("%i ", key_array[i]);
-    }
-    printf("\n\n");
 
     insertion_sort_disco(arq, qtd_de_Func);
     key_sorting(arq, &key_array, qtd_de_Func);
-    //insertion_sort(&key_array, qtd_de_Func);
-
-    for(int i=0; i<qtd_de_Func; i++){
-        printf("%i ", key_array[i]);
-    }
-    
 
     start_time_bin = clock();
-    int cod = buscaBinaria(buscar_Func_cod, qtd_de_Func, &key_array);
+    int cod = iterative_binary_search(&key_array, buscar_Func_cod, qtd_de_Func, &tot_comp_bin);
     end_time_bin = clock();
 
     temp_exe_bin += (double)(end_time_bin-start_time_bin)/CLOCKS_PER_SEC;
     
-    printf("\n## Tempo gasto na Execucao da busca Binaria: %.6f s\n", temp_exe_bin);
-
-
     printf("\n\n________ ## Teste utilizando a Busca Binaria ## ________\n\n");
     int verification = 0;
     for(int i=0; i<qtd_de_Func; i++){
@@ -83,6 +72,8 @@ int main(){
         func = le(arq);
         toString(func);
     }
+    printf("\n## No de comparacoes da busca Binaria: %i", tot_comp_bin);
+    printf("\n## Tempo gasto na Execucao da busca Binaria: %.8f s\n", temp_exe_bin);
     printf("____________________________________________________________\n\n");
 
     free(func);
@@ -130,58 +121,30 @@ TFunc *le(FILE *in){
 
 void cria_base_de_dados(FILE *arq, int nFunc){
 
-    int array[] = {24,40,17,38,31,10,20,36,42,49,50,92,72,9,85,94,45,88,86,58,18,71,22,25,1,62,83,79,39,54,87,7,95,98,2,14,67,33, 82,90,81,8,28,16,84,91,97,59,	48,99,21,73,4,27,41,78,29,44,43,93,13,3,6,56,89,65,61,96,77,70,76,75,32,34,	100,35,11,64,47,46,37,5,23,74,69,68,19,66,12,80,51,60,52,55,26,63,30,57,53};
+    srand(time(NULL));
 
     for(int i=1; i<= nFunc; i++){
-        int rand_num = array[i];
+        int rand_num =rand() % nFunc;
         TFunc func;
         func.cod = rand_num;
-        sprintf(func.nome, "Funcionario %i", array[i]);
+        sprintf(func.nome, "Funcionario %i", rand_num);
         sprintf(func.cpf, "000.000.000-00");
         sprintf(func.data_nascimento, "01/01/2000");
         func.salario = 1000 + i;
         fseek(arq, (i-1)*sizeof(TFunc), SEEK_SET);
         salva_arq(&func, arq);
+        printf("%i - ",rand_num);
        
     }
 }
 
-int buscaBinaria (int cod, int qtd_func, int *array) { 
-
-   int e = -1, d = qtd_func; 
-   int qtd_comp = 0;
-
-//    if(cod > qtd_func){
-//     return NULL;
-//    }
-
-    while (e < d-1) {    
-        int m = (e + d)/2;
-        if (array[m] < cod){
-            e = m; qtd_comp++; 
-        }
-        else {
-            d = m; qtd_comp++;
-        }
-    }
-    if(qtd_comp>qtd_func)
-    printf("O codigo não esta contido no array");
-    else
-    printf("\n## No de comparacoes da busca Binaria: %i", qtd_comp);
-  
-   return d;
-}
-
-TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq){
-
-    int qtd_comp = 0;
+TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq, int *comp){
 
     for(int i=0; i<tam_arq; i++){
-        qtd_comp ++;
+        *comp +=1;
         fseek(arq, i*sizeof(TFunc), SEEK_SET);
         TFunc *func = le(arq);
         if(func->cod == cod){
-            func->qtd_comparacoes = qtd_comp;
             return func;
         }
     }
@@ -199,21 +162,6 @@ void key_sorting(FILE *arq, int *key_array, int qtd_func){
     }
 
 }
-
-void insertion_sort(int *array, int qtd_func){
-
-    int i, j, tmp;
-  
-    for(i = 1; i < qtd_func; i++){
-    tmp = array[i];
-    for(j = i-1; j >= 0 && tmp < array[j]; j--){
-        array[j+1] = array[j];
-    }
-    array[j+1] = tmp;
-    }
-
-}
-
 
 void insertion_sort_disco(FILE *arq, int qtd_func){
     rewind(arq); 
@@ -235,6 +183,47 @@ void insertion_sort_disco(FILE *arq, int qtd_func){
         salva_arq(func_j, arq);
     }
     fflush(arq);
+}
+
+iterative_binary_search(int *array, int item, int array_length, int *comp)
+{
+    int begin = 0;
+    int end = array_length - 1;
+
+    while (begin <= end) {  /* Condição de parada */
+
+        int i = (begin + end) / 2;  /* Calcula o meio do sub-vetor */
+
+        if (array[i] == item) {  /* Item encontrado */
+            *comp +=1;
+            return i;
+        }
+
+        if (array[i] < item) {  /* Item está no sub-vetor à direita */
+            *comp +=1;
+            begin = i + 1;
+        } else {  /* vector[i] > item. Item está no sub-vetor à esquerda */
+            end = i;
+        }
+    }
+
+    return -1;
+}
+
+void Key_sorting_file(FILE *arq, FILE *arq_ordenado, int qtd_func){
+
+    Key_sorting tag_array[qtd_func];
+
+    for(int i=0; i<qtd_func; i++){
+        fseek(arq, i*sizeof(TFunc), SEEK_SET);
+        TFunc *func = le(arq); 
+        tag_array[i].cod = func->cod;
+        tag_array[i].RRN = i*sizeof(TFunc);
+    }
+
+    
+
+
 }
 
 
@@ -261,5 +250,50 @@ int busca_binaria(int *array, int qtd_func, int cod){
     }
     return -1;
 }
+
+int buscaBinaria (int cod, int qtd_func, int *array) { 
+
+   int e = -1, d = qtd_func; 
+   int qtd_comp = 0;
+
+   if(cod > qtd_func){
+    return NULL;
+   }
+
+    while (e < d-1) {    
+        int m = (e + d)/2;
+        if (array[m] < cod){
+            e = m; qtd_comp++; 
+        }
+        else {
+            d = m; qtd_comp++;
+        }
+    }
+    if(qtd_comp>qtd_func)
+    printf("O codigo não esta contido no array");
+    else
+    printf("\n## No de comparacoes da busca Binaria: %i", qtd_comp);
+  
+   return d;
+}
+
+
+void insertion_sort(int *array, int qtd_func){
+
+    int i, j, tmp;
+  
+    for(i = 1; i < qtd_func; i++){
+    tmp = array[i];
+    for(j = i-1; j >= 0 && tmp < array[j]; j--){
+        array[j+1] = array[j];
+    }
+    array[j+1] = tmp;
+    }
+
+}
+
+
+    //int array[] = {24,40,17,38,31,10,20,36,42,49,50,92,72,9,85,94,45,88,86,58,18,71,22,25,1,62,83,79,39,54,87,7,95,98,2,14,67,33, 82,90,81,8,28,16,84,91,97,59,	48,99,21,73,4,27,41,78,29,44,43,93,13,3,6,56,89,65,61,96,77,70,76,75,32,34,	100,35,11,64,47,46,37,5,23,74,69,68,19,66,12,80,51,60,52,55,26,63,30,57,53};
+
 
 */
