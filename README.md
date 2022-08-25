@@ -1,6 +1,6 @@
 # Prova 1 da disciplina de AEDS 2 - CSI-429
 
-Professora: Tatiana Alves Costa     Valor: 20 pontos
+Professora: Tatiana Alves Costa  --  Valor: 20 pontos
 
 1) (5 pontos) Dada a estrutura de dados Funcionário definida em aula, pede-se:
 
