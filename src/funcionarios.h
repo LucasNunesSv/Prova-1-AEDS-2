@@ -25,8 +25,6 @@ TFunc *le(FILE *in);
 void cria_base_de_dados(FILE *arq, int qtdFunc);
 TFunc *busca_sequencial(int cod, FILE *arq, int tam_arq, int *comp);
 TFunc *buscaBinaria (int cod, int qtd_func, FILE *arq, int *comp);
-//void key_sorting(FILE *arq, int *key_array, int qtd_func);
 void insertion_sort_disco(FILE *arq, int qtd_func);
-//int iterative_binary_search(int *array, int item, int array_length, int *comp);
 void Key_sorting_file(FILE *arq, FILE *arq_ordenado, int qtd_func);
 void ordena_array(Key_sorting *array, int qtd_func);
