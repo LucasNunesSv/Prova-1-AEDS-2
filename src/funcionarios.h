@@ -3,6 +3,9 @@
 #include <time.h>
 #include <string.h>
 
+// Lucas Nunes Silveira - 20.2.8040
+// Matheus Lopes Moreira - 20.2.8002
+
 #define MAXTAM 2
 
  typedef struct Funcionario {
