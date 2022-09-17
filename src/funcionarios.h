@@ -14,11 +14,11 @@
      char cpf[15];
      char data_nascimento[11];
      float salario;
-     int qtd_comparacoes;
+    //  int qtd_comparacoes;
  }TFunc;
 
  typedef struct key_sorting{
-    int cod;
+    int cod; //key
     long RRN;
  }Key_sorting;
 
