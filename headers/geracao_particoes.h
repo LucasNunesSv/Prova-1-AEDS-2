@@ -11,13 +11,6 @@
 #include "string.h"
 
 
-int getMinIndexWithFrozen(int M, TFunc* *memory, char *frozen);
-int getMinIndex(int M, TFunc* *memory);
-void initFronzenArray(char *array, int M);
-int fullXFrozenArray(char *array, int m);
-int estaVazio(TFunc **vetor, int n);
-int reservatorioTransferToMemory(FILE *reservatorio,TFunc **memory,int indexReservatorio, int M);
-
 typedef struct FuncAux{
     TFunc* Funcionario;
     // 0 para True e 1 para false
@@ -273,94 +266,3 @@ int getMinIndex(int M, TFunc* *memory){
 }
 
 #endif
-
-/*
-
-// ponteiro para arquivo de entrada
-    char *nome_particao = nome_aqr_saida->nome;
-    nome_aqr_saida = nome_aqr_saida->prox;
-
-    // ponteiros para os arquivos
-    FILE *particao_saida;
-    FILE *arq_entrada;
-
-    // Aloca em memoria um array dinamico que sera nosso array em memoria
-    FuncAux* array_memoria = (FuncAux *)malloc(sizeof(FuncAux) * M);
-
-    // Abre o arquivo de entrada
-
-    if(((arq_entrada = fopen(nome_arq_entrada, "rb")) == NULL) || (particao_saida = fopen(nome_particao, "wb")) == NULL){
-        printf("Erro ao abrir arquivo de entrada ou particao de saida\n");
-    }else{
-        // Seleciona M elementos do arquivo para o nosso Array de mesmo tamanho
-        for(int i = 0; i < M; i++){
-            fread(&array_memoria[i].Funcionario, sizeof(TFunc), 1, arq_entrada);
-        }
-    }
-
-    printf("Array em memoria\n");
-    for(int i =0; i<M;i++){
-        toString(array_memoria[i].Funcionario);
-    }
-
-    while(!feof(arq_entrada)){
-        TFunc* recem_gravado = (TFunc *) malloc(sizeof(TFunc));
-        // seleciona do array em memoria o menos registro
-        int menor = -1;
-        int posicao_menor = 0;
-        for(int i = 0; i < M; i++){
-            if(menor == -1){
-                if(&array_memoria[i].congelado != 0){
-                    menor = array_memoria[i].Funcionario->cod; // atenção
-                    posicao_menor = i;
-                }
-            }else{
-                if(menor < array_memoria[i].Funcionario->cod){
-                    if(&array_memoria[i].congelado != 0){
-                        menor = array_memoria[i].Funcionario->cod;
-                        posicao_menor = i;
-                    }
-                }
-            }
-        }
-
-        // grava o menor registro na partição de saida
-        salva_arq(array_memoria[posicao_menor].Funcionario, particao_saida);
-        recem_gravado = array_memoria[posicao_menor].Funcionario;
-
-        // substitui, no array em memoria, o registro R pelo proximo registro do arquivo entrada
-
-        fread(&array_memoria[posicao_menor].Funcionario, sizeof(TFunc), 1, arq_entrada);
-
-        // caso o recem gravado seja maior que o 
-        if(recem_gravado->cod > array_memoria[posicao_menor].Funcionario->cod){
-            //considera esta posição congelada
-            array_memoria[posicao_menor].congelado = 0;
-        }
-
-        //Caso existam em memória registros não congelados
-        int congelado = 0;
-        for(int i = 0; i < M; i++){
-            if(array_memoria[i].congelado != 0){
-                congelado++;
-                break;
-            }
-        }
-
-        if(congelado == 0){
-            fclose(particao_saida);
-            for(int i = 0; i < M; i++){
-                array_memoria[i].congelado = 1;
-            }
-            if((particao_saida = fopen(nome_aqr_saida->nome, "wb")) == NULL){
-                printf("Erro ao abrir novo arquivo de saida");
-            }
-            nome_aqr_saida = nome_aqr_saida->prox;
-        }
-    }
-    // fecha os arquivos usados apos o loop
-
-    fclose(particao_saida);
-    fclose(arq_entrada);
-
-*/
