@@ -461,7 +461,7 @@ void selec_sub(){
 
 void selec_nat(){
 
-    printf("\n Gerando particoes com SELECAO_SUBSTITUICAO...\n");
+    printf("\n Gerando particoes com SELECAO_NATURAL...\n");
 
     nomes = cria_nomes(cria_str("p_sn1.dat"),
                 cria_nomes(cria_str("p_sn2.dat"),
