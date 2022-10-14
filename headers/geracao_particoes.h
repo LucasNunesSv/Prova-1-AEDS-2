@@ -24,7 +24,7 @@ void selecao_com_substituicao(char *nome_arq_entrada, Nomes *nome_aqrs_saida, in
 
     //abre o arq para leitura
     if((arq = fopen(nome_arq_entrada, "rb")) == NULL){
-        printf("[ERRO] nao foi possivel abrir o arquivo");
+        printf("[ERRO 3] nao foi possivel abrir o arquivo");
     }else{
 
         FILE *p; // arq de partições
@@ -45,7 +45,7 @@ void selecao_com_substituicao(char *nome_arq_entrada, Nomes *nome_aqrs_saida, in
             char *nome_particao = nome_aqrs_saida->nome; // pega o nome da primeira partição
 
             if((p = fopen(nome_particao, "wb")) == NULL){
-                printf("[ERRO] nao foi possivel criar arquivo de saida");
+                printf("[ERRO 2] nao foi possivel criar arquivo de saida");
             }else{
                 while((fullXFrozenArray(frozen, M) != 1)){
                     //enquanto nao tiver todo o array congelado ou for o fim do arquivo, pega o index do menor codigo dentro da memory
@@ -98,7 +98,7 @@ void selecao_natural(char *nome_arq_entrada, Nomes *nome_arqs_saida, int M, int 
     // abre o arquivo para leitura
     arq = fopen(nome_arq_entrada, "rb");
     if(arq == NULL){
-        printf("[ERRO1] - Nao foi possivel ler o arquivo\n");
+        printf("[ERRO 1] - Nao foi possivel ler o arquivo\n");
     }else{
         FILE *p; // arq de partições
 
@@ -116,7 +116,7 @@ void selecao_natural(char *nome_arq_entrada, Nomes *nome_arqs_saida, int M, int 
             // abre arquivo de partição
             char *nome_particao = nome_arqs_saida->nome; //pega o nome da primeira partição
             if((p = fopen(nome_particao, "wb")) == NULL){
-                printf("[ERRO2] - Nao foi possivel criar arquivo de saida\n");
+                printf("[ERRO 2] - Nao foi possivel criar arquivo de saida\n");
             }else{
                 fimParticao = 0;
                 while(fimParticao == 0){  // enquanto nao tiver todo o array NULL ou for o fim do arquivo
@@ -171,7 +171,7 @@ void selecao_natural(char *nome_arq_entrada, Nomes *nome_arqs_saida, int M, int 
         if((isEmptyEntrada != 0) && (estaVazio(memory,M) == 0)){
             char *nome_particao = nome_arqs_saida->nome;
             if((p = fopen(nome_particao, "wb")) == NULL){
-                printf("[ERRO3] - nao foi possivel criar arquivo de saida\n");
+                printf("[ERRO 3] - nao foi possivel criar arquivo de saida\n");
             }else{
                 while(estaVazio(memory, M) != 1){
                     int minIndex = getMinIndex(M, memory);
