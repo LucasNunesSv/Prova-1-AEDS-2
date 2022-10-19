@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct Nomes {
+typedef struct Nomes
+{
     char *nome;
     struct Nomes *prox;
 } Nomes;

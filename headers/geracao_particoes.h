@@ -10,12 +10,12 @@
 #include "stdbool.h"
 #include "string.h"
 
-
-typedef struct FuncAux{
-    TFunc* Funcionario;
+typedef struct FuncAux
+{
+    TFunc *Funcionario;
     // 0 para True e 1 para false
     int congelado;
-}FuncAux;
+} FuncAux;
 
 void selecao_com_substituicao(char *nome_arq_entrada, Nomes *nome_aqrs_saida, int M);
 
@@ -25,12 +25,12 @@ void initFronzenArray(char *array, int M);
 
 int fullXFrozenArray(char *array, int m);
 
-int getMinIndexWithFrozen(int M, TFunc* *memory, char *frozen) ;
+int getMinIndexWithFrozen(int M, TFunc **memory, char *frozen);
 
 int estaVazio(TFunc **vetor, int n);
 
-int reservatorioTransferToMemory(FILE *reservatorio,TFunc **memory,int indexReservatorio, int M);
+int reservatorioTransferToMemory(FILE *reservatorio, TFunc **memory, int indexReservatorio, int M);
 
-int getMinIndex(int M, TFunc* *memory);
+int getMinIndex(int M, TFunc **memory);
 
 #endif
