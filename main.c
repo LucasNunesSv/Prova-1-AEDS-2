@@ -8,14 +8,27 @@
 #include "headers\funcionarios.h"
 #include "headers\nomes.h"
 #include "headers\geracao_particoes.h"
+#include "headers\hashing.h"
 
 // Criado por Vanessa Braganholo em 16/09/2018
 // Atualizado por: Lucas Nunes Silveira - 20.2.8040 / Matheus Lopes Moreira - 20.2.8002
 
     // Vars globais
 
-    int base_verify = 0, arq_ordenado_verify = 0, qtd_funcionarios;
+    int base_verify = 0, arq_ordenado_verify = 0, qtd_funcionarios, hash_verify = 0;
     Nomes *nomes = NULL, *p;
+    THash tabela_hash;
+
+    
+void criar_bd();
+void exec_Keysorting(FILE *arq, FILE *arq_ordenado);
+void exec_insertion_sort(FILE *arq_ins);
+void exec_busca_sequencial(FILE *arq);
+void imprime_bd(FILE *arq, FILE *arq_ordenado);
+void selec_sub();
+void selec_nat();
+void exec_hash();
+void imprime_hash();
 
 int main(){
 
@@ -40,7 +53,7 @@ int main(){
         printf("\n               ___ MENU ___\n");
         printf("\n[1] - Criar Base de Dados\n[2] - Procurar Funcionario por KEY_SORTING");
         printf("\n[3] - Procurar funcionario por INSERTION_SORT\n[4] - Procurar funcionario por BUSCA_SEQUENCIAL\n");
-        printf("[5] - Imprimir base de dados completa\n[6] - Gerar particoes usando Selecao por substituicao\n[7] - Gerar particoes usando selecao natural\n[0] - Sair\n");
+        printf("[5] - Imprimir base de dados completa\n[6] - Gerar particoes usando Selecao por substituicao\n[7] - Gerar particoes usando selecao natural\n[8] - Gerar tabela HASH com os arquivos de entrada (TESTE)\n[9] - Imprimir tabela HASH (TESTE)\n[0] - Sair\n");
         
         printf("\nDigite a opcao desejada: ");
         scanf("%i", &condicao);
@@ -95,6 +108,20 @@ int main(){
                 }
                 selec_nat();
                 break;
+            case 8:
+                if(base_verify == 0){
+                    printf("\n!!! E necessario criar uma base de dados antes de gerar tabelas hash !!!\n");
+                    break;
+                }
+                exec_hash(arq);
+                break;
+            case 9:
+                if(base_verify == 0){
+                    printf("\n!!! E necessario criar uma base de dados antes de imprimir tebelas hash !!!\n");
+                    break;
+                }
+                imprime_hash();
+                break;
             case 0:
                 printf("\n## Obrigado por usar este programa :) ##\n");
                 break;
@@ -107,6 +134,8 @@ int main(){
     fclose(arq);
     fclose(arq_ordenado);
     fclose(arq_ins);
+    free(nomes);
+    free(p);
 
     return 0;
 }
@@ -286,3 +315,40 @@ void selec_nat(){
     printf("\nParticoes geradas com sucesso !!\n");
 
 }
+
+void exec_hash(FILE *arq){
+
+    Func_info info_array[qtd_funcionarios];
+
+    THash_inicia(&tabela_hash, TAM_TABELA);
+
+    rewind(arq);
+
+    //Cria_infoArray(info_array, NOME_ARQUIVO_ENTRADA, qtd_funcionarios);
+    for(int i=0; i<qtd_funcionarios; i++){
+
+        fseek(arq, i*sizeof(TFunc), SEEK_SET);
+        info_array[i].RRN = ftell(arq);
+        TFunc *func = le(arq); 
+        info_array[i].func_cod = func->cod;
+
+        THash_insere(&tabela_hash, info_array[i]);
+
+    }
+
+    printf("\n!! Tabela hash criada com sucesso !! \n");
+
+    hash_verify++;
+
+}
+
+void imprime_hash(){
+
+    if(hash_verify == 0){
+        printf("\n!!! E necessario gerar uma tabela hash antes de imprimi-la !!!\n");
+    }else{
+        imprime_tab_hash(&tabela_hash);
+    }
+
+}
+
