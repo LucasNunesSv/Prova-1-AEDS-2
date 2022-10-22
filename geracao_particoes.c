@@ -120,7 +120,7 @@ void selecao_natural(char *nome_arq_entrada, Nomes *nome_arqs_saida, int M, int 
         }
 
         while ((isEmptyEntrada == 0 && estaVazio(memory, M) == 0))
-        { // enquanto nao for o fim fo arquivo de entrada e fim do alg
+        { // enquanto nao for o fim do arquivo de entrada e fim do algoritmo(array_memory vazio)
             reservatorio = fopen("reservatorio.dat", "wb+");
             // abre arquivo de partição
             char *nome_particao = nome_arqs_saida->nome; // pega o nome da primeira partição
@@ -170,16 +170,17 @@ void selecao_natural(char *nome_arq_entrada, Nomes *nome_arqs_saida, int M, int 
                             {
                                 if (minFuncNovoR->cod < minFunc->cod)
                                 {
-                                    salva_arq(minFuncNovoR, reservatorio);
+                                    salva_arq(minFuncNovoR, reservatorio); // se o cod de minFuncNovoR for menor que o func atual, guarda o minFuncNovoR no reservatorio (semelhante a congelar-lo)
                                     indexReservatorio++; // indica quantos elementos estao dentro do reservatorio
                                 }
                                 else
                                 {
-                                    memory[minIndex] = minFuncNovoR;
+                                    memory[minIndex] = minFuncNovoR; // guarda o minFunNovoR na memoria, deixando-a ordenada
                                 }
                             }
                             else
                             {
+                                //fim do arquivo
                                 isEmptyEntrada = 1;
                                 memory[minIndex] = NULL;
                                 break;
@@ -188,6 +189,7 @@ void selecao_natural(char *nome_arq_entrada, Nomes *nome_arqs_saida, int M, int 
                     }
                 }
                 indexReservatorio = reservatorioTransferToMemory(reservatorio, memory, indexReservatorio, M);
+                // Transfere os arquivos do reservatorio para a memoria para passarem pelas etapas novamente
                 fclose(reservatorio);
                 fclose(p);                               // fecha a partição atual
                 nome_arqs_saida = nome_arqs_saida->prox; // pega o proximo nome de partição e o coloca como atual

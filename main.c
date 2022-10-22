@@ -16,7 +16,8 @@
 // Vars globais
 
 int base_verify = 0, arq_ordenado_verify = 0, qtd_funcionarios, hash_verify = 0;
-Nomes *nomes = NULL, *p;
+Nomes *nomes = NULL;
+Nomes *p;
 THash_encad_externo tabela_hash;
 THash_simples tabela_hash_simples;
 
@@ -59,9 +60,9 @@ int main(){
         printf("\n[1] - Criar Base de Dados\n[2] - Procurar Funcionario por KEY_SORTING");
         printf("\n[3] - Procurar funcionario por INSERTION_SORT\n[4] - Procurar funcionario por BUSCA_SEQUENCIAL\n");
         printf("[5] - Imprimir base de dados completa\n[6] - Gerar particoes usando Selecao por substituicao\n");
-        printf("[7] - Gerar particoes usando selecao natural\n[8] - Gerar tabela HASH Enderecamento Externo (TESTE)\n");
-        printf("[9] - Imprimir tabela HASH: Enderecamento Externo (TESTE)\n[10] - Gerar tabela HASH Enderecamento Simples (TESTE)\n");
-        printf("[11] - Imprimir tabela HASH: Enderecamento Simples (TESTE)\n[0] - Sair\n");
+        printf("[7] - Gerar particoes usando selecao natural\n[8] - Gerar tabela HASH Enderecamento Simples \n");
+        printf("[9] - Imprimir tabela HASH: Enderecamento Simples \n[10] - Gerar tabela HASH Enderecamento Externo \n");
+        printf("[11] - Imprimir tabela HASH: Enderecamento Externo \n[0] - Sair\n");
 
         printf("\nDigite a opcao desejada: ");
         scanf("%i", &condicao);
@@ -137,7 +138,7 @@ int main(){
                 printf("\n!!! E necessario criar uma base de dados antes de gerar tabelas hash !!!\n");
                 break;
             }
-            exec_hash_externo(arq);
+            exec_hash_simples(arq);
             break;
         case 9:
             if (base_verify == 0)
@@ -145,7 +146,7 @@ int main(){
                 printf("\n!!! E necessario criar uma base de dados antes de imprimir tebelas hash !!!\n");
                 break;
             }
-            imprime_hash_externo();
+            imprime_hash_simples();
             break;
         case 10:
             if (base_verify == 0)
@@ -153,7 +154,7 @@ int main(){
                 printf("\n!!! E necessario criar uma base de dados antes de gerar tabelas hash !!!\n");
                 break;
             }
-            exec_hash_simples(arq);
+            exec_hash_externo(arq);
             break;
         case 11:
             if (base_verify == 0)
@@ -161,7 +162,7 @@ int main(){
                 printf("\n!!! E necessario criar uma base de dados antes de imprimir tebelas hash !!!\n");
                 break;
             }
-            imprime_hash_simples();
+            imprime_hash_externo();
             break;
         case 0:
             printf("\n## Obrigado por usar este programa :) ##\n");
@@ -433,7 +434,7 @@ void exec_hash_simples(FILE *arq){
         TFunc *func = le(arq);
         info_array_simples[i].func_cod = func->cod;
 
-        THash_insere_simples(&tabela_hash, info_array_simples[i]);
+        THash_insere_simples(&tabela_hash_simples, info_array_simples[i]);
     }
 
     printf("\n!! Tabela hash criada com sucesso !! \n");

@@ -11,7 +11,7 @@ void THash_inicia_simples(THash_simples *hash){
 
     for(int i = 0; i < TAM_TABELA; i++){
         hash->Func_info_array[i].func_cod = -1;
-        hash->Func_info_array[i].RRN = 0;      
+        hash->Func_info_array[i].RRN = 0;  
     }
 }
 
@@ -24,11 +24,16 @@ void THash_insere_simples(THash_simples *hash, Func_info item){
         hash->Func_info_array[mod] = item;
         hash->tam++;
     }else{
-        printf("\n !! Espaco %i ocupado !! \n", mod);
+        printf("\n !! [COLISAO] - Espaco %i ocupado !! \n", mod);
     }
 }
 
 void imprime_tab_hash_simples(THash_simples *hash){
+
+    for (int i = 0; i < TAM_TABELA; i++)
+    {
+        printf("cod: %i - RRN: %lf", hash->Func_info_array[i].func_cod, hash->Func_info_array->RRN);
+    }
       
     for (int i = 0; i < TAM_TABELA; i++)
     {
@@ -37,15 +42,15 @@ void imprime_tab_hash_simples(THash_simples *hash){
             printf("\n_______________ Espaco %i _______________\n\n", i);
 
             
-            printf("* Funcionario %i \n", hash->Func_info_array[i].func_cod);
+            printf("* Funcionario %i  -  RRN: %i\n", hash->Func_info_array[i].func_cod, hash->Func_info_array[i].RRN);
 
-            printf("\n______________________________________\n\n");
+            printf("\n________________________________________\n\n");
         }else{
             printf("\n_______________ Espaco %i _______________\n\n", i);
 
             printf("* Espaco Vazio\n");
 
-            printf("\n______________________________________\n\n");
+            printf("\n________________________________________\n\n");
         }
     }
     
@@ -125,10 +130,10 @@ void imprime_tab_hash_encad_externo(THash_encad_externo *hash)
 
         while (inicio != NULL)
         {
-            printf("* Funcionario %i \n", inicio->func_info.func_cod);
+            printf("* Funcionario %i  -  RRN: %i\n", inicio->func_info.func_cod, inicio->func_info.RRN);
             inicio = inicio->prox;
         }
 
-        printf("\n______________________________________\n\n");
+        printf("\n________________________________________\n\n");
     }
 }

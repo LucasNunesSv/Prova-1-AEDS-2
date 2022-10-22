@@ -4,7 +4,7 @@
 
 #include "funcionarios.h"
 
-#define TAM_TABELA 7
+#define TAM_TABELA 10
 
 typedef struct Func_info
 {
