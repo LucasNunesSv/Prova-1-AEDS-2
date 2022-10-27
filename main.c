@@ -33,7 +33,8 @@ void imprime_hash_externo();
 void exec_hash_simples();
 void imprime_hash_simples();
 
-int main(){
+int main()
+{
 
     // Vars
 
@@ -403,6 +404,19 @@ void exec_hash_externo(FILE *arq)
 
     printf("\n!! Tabela hash criada com sucesso !! \n");
 
+    nomes = cria_nomes(cria_str("hash_ex1.dat"),
+                       cria_nomes(cria_str("hash_ex2.dat"),
+                                  cria_nomes(cria_str("hash_ex3.dat"),
+                                             cria_nomes(cria_str("hash_ex4.dat"),
+                                                        cria_nomes(cria_str("hash_ex5.dat"),
+                                                                   cria_nomes(cria_str("hash_ex6.dat"),
+                                                                              cria_nomes(cria_str("hash_ex7.dat"),
+                                                                                         cria_nomes(cria_str("hash_ex8.dat"),
+                                                                                                    cria_nomes(cria_str("hash_ex9.dat"),
+                                                                                                               cria_nomes(cria_str("hash_ex10.dat"), NULL))))))))));
+
+    gerar_particoes_hash_endExt(&tabela_hash, nomes, NOME_ARQUIVO_ENTRADA);
+
     hash_verify++;
 }
 
@@ -419,7 +433,8 @@ void imprime_hash_externo()
     }
 }
 
-void exec_hash_simples(FILE *arq){
+void exec_hash_simples(FILE *arq)
+{
 
     Func_info info_array_simples[qtd_funcionarios];
 
@@ -439,7 +454,19 @@ void exec_hash_simples(FILE *arq){
 
     printf("\n!! Tabela hash criada com sucesso !! \n");
 
-    hash_verify++;    
+    nomes = cria_nomes(cria_str("hash_s1.dat"),
+                       cria_nomes(cria_str("hash_s2.dat"),
+                                  cria_nomes(cria_str("hash_s3.dat"),
+                                             cria_nomes(cria_str("hash_s4.dat"),
+                                                        cria_nomes(cria_str("hash_s5.dat"),
+                                                                   cria_nomes(cria_str("hash_s6.dat"),
+                                                                              cria_nomes(cria_str("hash_s7.dat"),
+                                                                                         cria_nomes(cria_str("hash_s8.dat"),
+                                                                                                    cria_nomes(cria_str("hash_s9.dat"),
+                                                                                                               cria_nomes(cria_str("hash_s10.dat"), NULL))))))))));
+    gerar_particoes_hash_simpl(&tabela_hash_simples, nomes, NOME_ARQUIVO_ENTRADA);
+
+    hash_verify++;
 }
 
 void imprime_hash_simples()

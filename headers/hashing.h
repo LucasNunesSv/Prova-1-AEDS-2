@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "funcionarios.h"
+#include "nomes.h"
 
 #define TAM_TABELA 10
 
@@ -43,6 +44,8 @@ void THash_inicia_simples(THash_simples *hash);
 
 void THash_insere_simples(THash_simples *hash, Func_info item);
 
+void gerar_particoes_hash_simpl(THash_simples *hash, Nomes *nomes_arq_saida, char *nome_arq_entrada);
+
 void imprime_tab_hash_simples(THash_simples *hash);
 
 // =============================================================
@@ -56,5 +59,7 @@ void THash_insere_encad_externo(THash_encad_externo *hash, Func_info item);
 int Tlista_eh_vazia_encad_externo(TLista *lista);
 
 void Tlista_insere_encad_externo(TLista *lista, Func_info item);
+
+void gerar_particoes_hash_endExt(THash_encad_externo *hash, Nomes *nomes,char* nome_arq_entrada);
 
 void imprime_tab_hash_encad_externo(THash_encad_externo *hash);
