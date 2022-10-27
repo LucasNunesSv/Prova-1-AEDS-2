@@ -50,9 +50,8 @@ void selecao_com_substituicao(char *nome_arq_entrada, Nomes *nome_aqrs_saida, in
                     salva_arq(minFunc, p);
 
                     // Pega o proximo registro
-                    if (fim == 0)
+                    if (fim == 0) // Verifica se esta no final do arq de entrada, se estiver o alg nao carregara novos funcionarios
                     {
-                        // Verifica se esta no final do arq de entrada, se estiver o alg nao carregara novos funcionarios
                         TFunc *minFuncAux = le(arq);
                         if (minFuncAux != NULL)
                         {
